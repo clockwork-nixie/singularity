@@ -1,21 +1,19 @@
 'use strict';
 
-const { parse, register } = require('./src/ruleset');
-const { add, addTypeOf, find, isTypeOf } = require('./src/concept');
+const parse = require('./src/interactive');
 
 
-register('$token is a concept', add);
-register('$subClass is a type of $superClass', addTypeOf);
-register('is $type a type of $concept', isTypeOf);
+try { 
+    parse('$animal is a concept');
+    parse('$cat is a type of $animal');
+    parse('$dog is a type of $animal');
+    parse('$ocelot is a type of $cat');
 
-console.log("");
-  
-parse('$animal is a concept');
-parse('$cat is a type of $animal');
-parse('$dog is a type of $animal');
-parse('$ocelot is a type of $cat');
+    console.log('');
 
-console.log('');
-
-console.log(parse('is $ragdoll a type of $animal')? "Yes": "Failure");
-console.log(parse('is $ocelot a type of $dog')? "Failure": "No");
+    console.log(parse('is $ocelot a type of $animal'));
+    console.log(parse('is $ocelot a type of $dog'));
+} catch (error) {
+    console.error('');
+    console.error(`Runtime error: ${error.message}`);
+}

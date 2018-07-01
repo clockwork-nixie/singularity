@@ -1,31 +1,30 @@
 'use strict';
 
 
-class Ruleset {
+class Parser {
     constructor() {
         this._prefix = '$';
         this._registry = {};
-
-        this.parse = this.parse.bind(this);
-        this.register = this.register.bind(this);
+        this._separators = /[\s,]+/;
     }
 
 
     parse(sentence) {
-        const words = (sentence || '').split(' ').filter(word => word.replace(' ', ''));
+        const words = (sentence || '').split(this._separators).filter(word => word);
         const token = words.map(word => word.startsWith(this._prefix)? this._prefix: word).join(' ');
         const directive = this._registry[token];
 
         if (!directive) {
             throw Error(`Unknown directive: ${sentence}`);
         }
-        console.log(`Parsed: ${sentence}`);
+        console.log(`>> ${sentence}`);
+        
         return directive.routine.apply(null, directive.parameters.map(i => words[i].substr(1)));
     }
 
 
     register(pattern, routine) {
-        const words = (pattern || '').split(' ').filter(word => word.replace(' ', ''));
+        const words = (pattern || '').split(this._separators).filter(word => word);
         const token = words.map(word => word.startsWith(this._prefix)? this._prefix: word).join(' ');
         const parameters = words.map((word, index) => word.startsWith(this._prefix)? index: null).filter(x => x !== null);
 
@@ -37,10 +36,10 @@ class Ruleset {
             throw Error(`A rule has already been defined for: ${pattern}`);
         } else {
             this._registry[token] = { parameters, routine };
-            console.log(`Registered: ${pattern}`);
+            console.log(`## ${pattern}`);
         }
     }
 }
 
 
-module.exports = new Ruleset();
+module.exports = Parser;

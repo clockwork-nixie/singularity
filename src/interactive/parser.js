@@ -5,7 +5,7 @@ class Parser {
     constructor() {
         this._prefix = '$';
         this._registry = {};
-        this._separators = /[\s,]+/;
+        this._separators = /[\s]+/;
     }
 
 
